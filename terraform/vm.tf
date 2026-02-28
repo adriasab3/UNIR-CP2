@@ -91,8 +91,10 @@ resource "azurerm_linux_virtual_machine" "vm" {
     azurerm_network_interface.interface.id,
   ]
   admin_ssh_key {
-    username   = "adminuser"
-    public_key = file("./UNIR.pub")
+#    username   = "adminuser"
+    username   = var.ssh_user
+#    public_key = file("./UNIR.pub")
+    public_key = file(var.public_key_path)
   }
 
   os_disk {
