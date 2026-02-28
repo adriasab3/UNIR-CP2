@@ -17,5 +17,6 @@ provider "azurerm" {
 
 resource "azurerm_resource_group" "rg" {
   name     = "myTFResourceGroup"
-  location = "francecentral"
+  #location = "francecentral"
+  location = var.location
 }
