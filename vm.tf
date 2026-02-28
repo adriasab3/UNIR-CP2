@@ -42,7 +42,7 @@ resource "azurerm_virtual_network" "network" {
 #  }
 
   tags = {
-    environment = "Production"
+    environment = "casopractico2"
   }
 }
 
