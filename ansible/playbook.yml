@@ -1,6 +1,7 @@
 ---
 - name: Setup ACR and Images
   hosts: localhost
+  tags: acr
   vars_files:
     - secrets.yml
   tasks:
@@ -9,7 +10,8 @@
         name: acr
 
 - name: Setup Webserver
-  hosts: webapp
+  hosts: vm
+  tags: webserver
   vars_files:
     - secrets.yml
   tasks:

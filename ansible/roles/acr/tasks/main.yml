@@ -1,0 +1,20 @@
+- name: Login to ACR
+  containers.podman.podman_login:
+    username: "{{ acr_username }}"
+    password: "{{ acr_password }}"
+    registry: "{{ acr_name }}.azurecr.io"
+
+- name: Pull nginx image
+  containers.podman.podman_image:
+    name: docker.io/nginx:latest
+
+- name: Tag nginx image for ACR
+  containers.podman.podman_tag:
+    image: docker.io/nginx:latest
+    target_names:
+      - "{{ acr_name }}.azurecr.io/nginx:latest"
+
+- name: Push nginx image to ACR
+  containers.podman.podman_image:
+    name: "{{ acr_name }}.azurecr.io/nginx:latest"
+    push: true

@@ -1,0 +1,36 @@
+- name: Install podman
+  ansible.builtin.apt:
+    name: podman
+    state: present
+  become: yes
+
+
+- name: Login to ACR
+  containers.podman.podman_login:
+    username: "{{ acr_username }}"
+    password: "{{ acr_password }}"
+    registry: "{{ acr_name }}.azurecr.io"
+  become: yes
+
+- name: Pull an image for a specific CPU architecture
+  containers.podman.podman_image:
+    name: "{{ acr_name }}.azurecr.io/nginx:latest"
+
+- name: Run container
+  containers.podman.podman_container:
+    name: nginx_container
+    image: "{{ acr_name }}.azurecr.io/nginx:latest"
+    state: started
+    ports:
+      - "80:80"
+  become: yes
+      #    volume:
+      #- /tmp/data
+
+- name: Restart nginx container
+  containers.podman.podman_container:
+    name: nginx_container
+    image: "{{ acr_name }}.azurecr.io/nginx:latest"
+    state: started
+    force_restart: true
+  become: yes
