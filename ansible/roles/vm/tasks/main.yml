@@ -1,9 +1,38 @@
-- name: Install podman
+- name: Update apt repositories
   ansible.builtin.apt:
-    name: podman
+    update_cache: yes
+  become: yes
+
+- name: Install podman and auth packages
+  ansible.builtin.apt:
+    name: 
+      - podman
+      - apache2-utils
+      - python3-passlib
     state: present
   become: yes
 
+- name: Create directory for nginx config
+  ansible.builtin.file:
+    path: /opt/nginx/conf.d
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: Create htpasswd file
+  community.general.htpasswd:
+    path: /opt/nginx/conf.d/.htpasswd
+    name: "{{ nginx_auth_user }}"
+    password: "{{ nginx_auth_password }}"
+    state: present
+    mode: '0775'
+  become: yes
+
+- name: Copy nginx auth config
+  ansible.builtin.template:
+    src: default.conf.j2
+    dest: /opt/nginx/conf.d/auth.conf
+  become: yes
 
 - name: Login to ACR
   containers.podman.podman_login:
@@ -12,9 +41,10 @@
     registry: "{{ acr_name }}.azurecr.io"
   become: yes
 
-- name: Pull an image for a specific CPU architecture
+- name: Pull an nginx image 
   containers.podman.podman_image:
     name: "{{ acr_name }}.azurecr.io/nginx:latest"
+  become: yes
 
 - name: Run container
   containers.podman.podman_container:
@@ -23,9 +53,10 @@
     state: started
     ports:
       - "80:80"
+    volume:
+      - "/opt/nginx/conf.d/auth.conf:/etc/nginx/conf.d/auth.conf"
+      - "/opt/nginx/conf.d/.htpasswd:/etc/nginx/conf.d/.htpasswd"
   become: yes
-      #    volume:
-      #- /tmp/data
 
 - name: Restart nginx container
   containers.podman.podman_container:

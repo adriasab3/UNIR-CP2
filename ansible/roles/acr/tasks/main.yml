@@ -6,11 +6,13 @@
 
 - name: Pull nginx image
   containers.podman.podman_image:
-    name: docker.io/nginx:latest
+    #    name: docker.io/nginx:latest
+    name: docker.io/nginxdemos/hello:latest
 
 - name: Tag nginx image for ACR
   containers.podman.podman_tag:
-    image: docker.io/nginx:latest
+    #image: docker.io/nginx:latest
+    image: docker.io/nginxdemos/hello:latest
     target_names:
       - "{{ acr_name }}.azurecr.io/nginx:latest"
 
