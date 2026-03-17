@@ -4,7 +4,7 @@ resource "azurerm_kubernetes_cluster" "aks1" {
   resource_group_name = azurerm_resource_group.rg.name
   dns_prefix          = "exampleaks1"
   sku_tier	      = "Standard"
-
+  role_based_access_control_enabled = true
   default_node_pool {
     name       = "default"
     node_count = 1

@@ -4,4 +4,7 @@ resource "azurerm_container_registry" "acr" {
   location            = azurerm_resource_group.rg.location
   sku                 = "Basic"
   admin_enabled       = true
+  tags = {
+    environment = "casopractico2"
+  }
 }

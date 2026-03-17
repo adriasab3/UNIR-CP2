@@ -25,6 +25,9 @@ resource "azurerm_network_security_group" "security_group" {
         source_address_prefix           = "*"
         destination_address_prefix      = "*"
   }
+  tags = {
+    environment = "casopractico2"
+  }
 }
 
 
@@ -64,6 +67,9 @@ resource "azurerm_public_ip" "public_ip" {
 	location            = var.location
 	allocation_method   = "Static"
 	sku		    = "Standard"
+    tags = {
+       environment = "casopractico2"
+    }
 }
 
 resource "azurerm_network_interface" "interface" {
@@ -77,9 +83,15 @@ resource "azurerm_network_interface" "interface" {
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id	  = azurerm_public_ip.public_ip.id
   }
+  tags = {
+    environment = "casopractico2"
+  }
 }
 
-
+resource "tls_private_key" "ssh_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
 
 resource "azurerm_linux_virtual_machine" "vm" {
   name                = "vm-CP2"
@@ -91,10 +103,10 @@ resource "azurerm_linux_virtual_machine" "vm" {
     azurerm_network_interface.interface.id,
   ]
   admin_ssh_key {
-#    username   = "adminuser"
     username   = var.ssh_user
 #    public_key = file("./UNIR.pub")
-    public_key = file(var.public_key_path)
+#    public_key = file(var.public_key_path)
+    public_key = tls_private_key.ssh_key.public_key_openssh
   }
 
   os_disk {
@@ -107,6 +119,9 @@ resource "azurerm_linux_virtual_machine" "vm" {
     offer     = "0001-com-ubuntu-server-jammy"
     sku       = "22_04-lts"
     version   = "latest"
+  }
+  tags = {
+    environment = "casopractico2"
   }
 }
 
