@@ -16,7 +16,38 @@
     target_names:
       - "{{ acr_name }}.azurecr.io/nginx:latest"
 
+- name: Pull azure-vote-front image
+  containers.podman.podman_image:
+    name: docker.io/suhuruli/azure-vote-front:latest
+
+- name: Tag azure-vote-front image for ACR
+  containers.podman.podman_tag:
+    #image: docker.io/nginx:latest
+    image: docker.io/suhuruli/azure-vote-front:latest
+    target_names:
+      - "{{ acr_name }}.azurecr.io/azure-vote-front:latest"
+
+- name: Pull redis image
+  containers.podman.podman_image:
+    name: docker.io/redis:latest
+
+- name: Tag redis image for ACR
+  containers.podman.podman_tag:
+    image: docker.io/redis:latest
+    target_names:
+      - "{{ acr_name }}.azurecr.io/redis:latest"
+
 - name: Push nginx image to ACR
   containers.podman.podman_image:
     name: "{{ acr_name }}.azurecr.io/nginx:latest"
+    push: true
+
+- name: Push azure-vote-front image to ACR
+  containers.podman.podman_image:
+    name: "{{ acr_name }}.azurecr.io/azure-vote-front:latest"
+    push: true
+
+- name: Push redis image to ACR
+  containers.podman.podman_image:
+    name: "{{ acr_name }}.azurecr.io/redis:latest"
     push: true

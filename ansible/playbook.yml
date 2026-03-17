@@ -21,6 +21,7 @@
 
 - name: Setup AKS
   hosts: localhost
+  tags: aks
   vars_files:
     - secrets.yml
   tasks:
