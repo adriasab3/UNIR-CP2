@@ -1,0 +1,12 @@
+- name: Create namespace
+  k8s:
+    definition:
+      kind: Namespace
+      apiVersion: v1
+      metadata:
+        name: "{{ app_namespace }}"
+
+- name: Deploy App
+  k8s:
+    definition: "{{ lookup('template', 'aks_template.yml.j2') }}"
+    namespace: "{{ app_namespace }}"

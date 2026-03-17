@@ -21,7 +21,8 @@ resource "azurerm_kubernetes_cluster" "aks1" {
 }
 
 resource "azurerm_role_assignment" "ra-perm" {
-	principal_id = azurerm_kubernetes_cluster.aks1.identity[0].principal_id
+#	principal_id = azurerm_kubernetes_cluster.aks1.identity[0].principal_id
+	principal_id = azurerm_kubernetes_cluster.aks1.kubelet_identity[0].object_id
 	role_definition_name = "AcrPull"
 	scope = azurerm_container_registry.acr.id
 }
