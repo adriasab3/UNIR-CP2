@@ -1,3 +1,4 @@
+#definición del Azure Kubernetes Service
 resource "azurerm_kubernetes_cluster" "aks1" {
   name                = "aks1"
   location            = azurerm_resource_group.rg.location
@@ -5,6 +6,7 @@ resource "azurerm_kubernetes_cluster" "aks1" {
   dns_prefix          = "exampleaks1"
   sku_tier	      = "Standard"
   role_based_access_control_enabled = true
+  #pool de nodos utilizada
   default_node_pool {
     name       = "default"
     node_count = 1
@@ -20,6 +22,7 @@ resource "azurerm_kubernetes_cluster" "aks1" {
   }
 }
 
+#asignación de permisos para que el aks pueda hacer pull de imagenes del ACR
 resource "azurerm_role_assignment" "ra-perm" {
 #	principal_id = azurerm_kubernetes_cluster.aks1.identity[0].principal_id
 	principal_id = azurerm_kubernetes_cluster.aks1.kubelet_identity[0].object_id

@@ -1,3 +1,4 @@
+#definición del security group para la vm, habilitando las conexiones hacia sus puertos 22 (ssh) y 80(http) 
 resource "azurerm_network_security_group" "security_group" {
   name                = "example-security-group"
   location            = var.location
@@ -42,25 +43,18 @@ resource "azurerm_network_security_group" "security_group" {
   }
 }
 
-
+#definición de la red
 resource "azurerm_virtual_network" "network" {
   name                = "example-network"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   address_space       = ["10.0.0.0/16"]
-#  dns_servers         = ["10.0.0.4", "10.0.0.5"]
-
-#  subnet {
-#    name             = "subnet1"
-#    address_prefix   = "10.0.1.0/24"
-#    security_group   = azurerm_network_security_group.security_group.id
-#  }
-
   tags = {
     environment = "casopractico2"
   }
 }
 
+#definición de la subred
 resource "azurerm_subnet" "subnet1" {
   name                 = "internal"
   resource_group_name  = azurerm_resource_group.rg.name
@@ -68,11 +62,13 @@ resource "azurerm_subnet" "subnet1" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
+#asociar la subred con el security group, de modo que todos los puertos creados en la subred apliquen las reglas definidas previamente
 resource "azurerm_subnet_network_security_group_association" "assoc" {
   subnet_id                 = azurerm_subnet.subnet1.id
   network_security_group_id = azurerm_network_security_group.security_group.id
 }
 
+#definición de la ip pública para la vm
 resource "azurerm_public_ip" "public_ip" {
 	name                = "public_ip_vm"
 	resource_group_name = azurerm_resource_group.rg.name
@@ -84,6 +80,7 @@ resource "azurerm_public_ip" "public_ip" {
     }
 }
 
+#definición de la interfaz de red
 resource "azurerm_network_interface" "interface" {
   name                = "interface"
   location            = var.location
@@ -100,11 +97,13 @@ resource "azurerm_network_interface" "interface" {
   }
 }
 
+#definición de la clave ssh
 resource "tls_private_key" "ssh_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
+#definición de la vm
 resource "azurerm_linux_virtual_machine" "vm" {
   name                = "vm-CP2"
   resource_group_name = azurerm_resource_group.rg.name
@@ -114,18 +113,17 @@ resource "azurerm_linux_virtual_machine" "vm" {
   network_interface_ids = [
     azurerm_network_interface.interface.id,
   ]
+  #añadir key a la vm
   admin_ssh_key {
     username   = var.ssh_user
-#    public_key = file("./UNIR.pub")
-#    public_key = file(var.public_key_path)
     public_key = tls_private_key.ssh_key.public_key_openssh
   }
-
+   
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
-
+  #imagen utilizada para la vm
   source_image_reference {
     publisher = "Canonical"
     offer     = "0001-com-ubuntu-server-jammy"

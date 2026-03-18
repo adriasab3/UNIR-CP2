@@ -1,4 +1,5 @@
 ---
+#playbook que se encarga de ejecutar todos los roles
 - name: Setup ACR and Images
   hosts: localhost
   tags: acr

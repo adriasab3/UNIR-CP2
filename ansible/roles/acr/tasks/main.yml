@@ -1,3 +1,4 @@
+#conjunto de tasks para descargar, taggear y almacenar las distintas imágenes en el ACR
 - name: Login to ACR
   containers.podman.podman_login:
     username: "{{ acr_username }}"
@@ -14,7 +15,7 @@
     #image: docker.io/nginx:latest
     image: docker.io/nginxdemos/hello:latest
     target_names:
-      - "{{ acr_name }}.azurecr.io/nginx:latest"
+      - "{{ acr_name }}.azurecr.io/nginx:casopractico2"
 
 - name: Pull azure-vote-front image
   containers.podman.podman_image:
@@ -25,7 +26,7 @@
     #image: docker.io/nginx:latest
     image: docker.io/suhuruli/azure-vote-front:latest
     target_names:
-      - "{{ acr_name }}.azurecr.io/azure-vote-front:latest"
+      - "{{ acr_name }}.azurecr.io/azure-vote-front:casopractico2"
 
 - name: Pull redis image
   containers.podman.podman_image:
@@ -35,19 +36,19 @@
   containers.podman.podman_tag:
     image: docker.io/redis:latest
     target_names:
-      - "{{ acr_name }}.azurecr.io/redis:latest"
+      - "{{ acr_name }}.azurecr.io/redis:casopractico2"
 
 - name: Push nginx image to ACR
   containers.podman.podman_image:
-    name: "{{ acr_name }}.azurecr.io/nginx:latest"
+    name: "{{ acr_name }}.azurecr.io/nginx:casopractico2"
     push: true
 
 - name: Push azure-vote-front image to ACR
   containers.podman.podman_image:
-    name: "{{ acr_name }}.azurecr.io/azure-vote-front:latest"
+    name: "{{ acr_name }}.azurecr.io/azure-vote-front:casopractico2"
     push: true
 
 - name: Push redis image to ACR
   containers.podman.podman_image:
-    name: "{{ acr_name }}.azurecr.io/redis:latest"
+    name: "{{ acr_name }}.azurecr.io/redis:casopractico2"
     push: true

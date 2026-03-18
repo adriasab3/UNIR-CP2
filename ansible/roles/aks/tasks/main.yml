@@ -1,3 +1,4 @@
+#conjunto de tasks que configuran y deployan el Azure Vote Front en el AKS mediante un template yaml
 - name: Create namespace
   k8s:
     definition:
