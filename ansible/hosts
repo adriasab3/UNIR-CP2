@@ -1,5 +1,5 @@
 [vm]
-51.103.33.164 ansible_ssh_private_key_file=~/UNIR-CP2/terraform/UNIR ansible_user=adminuser
+20.188.35.118 ansible_ssh_private_key_file=~/UNIR-CP2/terraform/ssh_key ansible_user=adminuser
 
 
 [acr]
